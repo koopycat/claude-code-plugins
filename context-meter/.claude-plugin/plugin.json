@@ -1,0 +1,7 @@
+{
+  "name": "context-meter",
+  "version": "0.1.0",
+  "description": "Shows the current model, context window fill and session cost above the prompt",
+  "author": { "name": "Viktor Koop" },
+  "types": "./types/index.d.ts"
+}
