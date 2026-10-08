@@ -1,5 +1,5 @@
 {
-  "name": "claude-mods",
+  "name": "claude-code-mods",
   "description": "Viktor's Claude Code mods: live UI and hooks inside Claude Code",
   "owner": {
     "name": "Viktor Koop"

@@ -1,4 +1,4 @@
-# claude-mods
+# claude-code-mods
 
 **Live UI and hooks for [Claude Code](https://claude.com/claude-code), packaged as a plugin marketplace.**
 
@@ -52,7 +52,7 @@ The row updates when the session starts, after every turn, whenever context or c
 At the prompt of a Claude Code terminal session:
 
 ```text
-/plugin install context-meter --marketplace koopycat/claude-mods
+/plugin install context-meter --marketplace koopycat/claude-code-mods
 ```
 
 Answer `y` to add the marketplace, then pick a scope (**user** puts the meter in every session). The mod is active right away; no restart.
@@ -60,9 +60,9 @@ Answer `y` to add the marketplace, then pick a scope (**user** puts the meter in
 ### From a local clone
 
 ```bash
-git clone https://github.com/koopycat/claude-mods.git
-claude plugin marketplace add ./claude-mods
-claude plugin install context-meter@claude-mods --scope user
+git clone https://github.com/koopycat/claude-code-mods.git
+claude plugin marketplace add ./claude-code-mods
+claude plugin install context-meter@claude-code-mods --scope user
 ```
 
 A marketplace added from a folder is read from that folder, so after editing a mod, `/reload-plugins` picks up the change in a running session.
@@ -70,7 +70,7 @@ A marketplace added from a folder is read from that folder, so after editing a m
 ### Try it without installing
 
 ```bash
-claude --plugin-dir ./claude-mods/context-meter
+claude --plugin-dir ./claude-code-mods/context-meter
 ```
 
 This loads the mod for that one session and reloads it whenever you save a file.
@@ -78,8 +78,8 @@ This loads the mod for that one session and reloads it whenever you save a file.
 ### Uninstall
 
 ```bash
-claude plugin uninstall context-meter@claude-mods
-claude plugin marketplace remove claude-mods
+claude plugin uninstall context-meter@claude-code-mods
+claude plugin marketplace remove claude-code-mods
 ```
 
 ## Usage
@@ -102,7 +102,7 @@ The figures come from `$.session.model()` and `$.session.usage()`, the same numb
 ## Development
 
 ```text
-claude-mods/
+claude-code-mods/
 ├── .claude-plugin/marketplace.json   # lists every mod
 ├── context-meter/
 │   ├── .claude-plugin/plugin.json    # the mod's manifest
