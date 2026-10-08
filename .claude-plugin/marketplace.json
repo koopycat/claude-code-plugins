@@ -1,6 +1,6 @@
 {
-  "name": "claude-code-mods",
-  "description": "Viktor's Claude Code mods: live UI and hooks inside Claude Code",
+  "name": "vk",
+  "description": "Viktor's plugins for Claude Code: mods with live UI, hooks, commands and agents",
   "owner": {
     "name": "Viktor Koop"
   },

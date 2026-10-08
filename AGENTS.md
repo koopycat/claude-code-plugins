@@ -28,7 +28,7 @@ Help the user choose whether to keep or promote it, retain it as a reference, or
 
 ## This project
 
-Claude Code mods (plugins of function hooks), published as one plugin marketplace.
+Claude Code plugins (starting with mods: plugins of function hooks), published as the `vk` plugin marketplace; GitHub repo `koopycat/claude-code-plugins`.
 
 - `.claude-plugin/marketplace.json` lists every mod; each mod is a top-level folder with `.claude-plugin/plugin.json`, `hooks/` and `tests/`.
 - A new mod also goes into the `mods` list in the `justfile`.

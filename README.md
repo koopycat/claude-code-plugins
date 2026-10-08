@@ -1,8 +1,8 @@
-# claude-code-mods
+# claude-code-plugins
 
-**Live UI and hooks for [Claude Code](https://claude.com/claude-code), packaged as a plugin marketplace.**
+**Plugins for [Claude Code](https://claude.com/claude-code), published as the `vk` plugin marketplace.**
 
-The first mod, **context-meter**, keeps the current model, how full the context window is, and what the session has cost in one row above your prompt, so you never have to type `/context` or `/cost` to find out.
+The first plugin, **context-meter**, is a mod (a plugin that draws live UI). It keeps the current model, how full the context window is, and what the session has cost in one row above your prompt, so you never have to type `/context` or `/cost` to find out.
 
 ```text
 Opus 5.5 · █████████░░░░░░░░░░░ 44% 87.4k / 200k · $1.23
@@ -10,7 +10,7 @@ Opus 5.5 · █████████░░░░░░░░░░░ 44% 87.
 
 ## Contents
 
-- [Mods](#mods)
+- [Plugins](#plugins)
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -19,9 +19,9 @@ Opus 5.5 · █████████░░░░░░░░░░░ 44% 87.
 - [Known limitations](#known-limitations)
 - [Contributing](#contributing)
 
-## Mods
+## Plugins
 
-| Mod | What it does |
+| Plugin | What it does |
 | --- | --- |
 | [`context-meter`](context-meter/) | Model, context fill bar, tokens used out of the window, and session cost, above the prompt |
 
@@ -52,7 +52,7 @@ The row updates when the session starts, after every turn, whenever context or c
 At the prompt of a Claude Code terminal session:
 
 ```text
-/plugin install context-meter --marketplace koopycat/claude-code-mods
+/plugin install context-meter --marketplace koopycat/claude-code-plugins
 ```
 
 Answer `y` to add the marketplace, then pick a scope (**user** puts the meter in every session). The mod is active right away; no restart.
@@ -60,9 +60,9 @@ Answer `y` to add the marketplace, then pick a scope (**user** puts the meter in
 ### From a local clone
 
 ```bash
-git clone https://github.com/koopycat/claude-code-mods.git
-claude plugin marketplace add ./claude-code-mods
-claude plugin install context-meter@claude-code-mods --scope user
+git clone https://github.com/koopycat/claude-code-plugins.git
+claude plugin marketplace add ./claude-code-plugins
+claude plugin install context-meter@vk --scope user
 ```
 
 A marketplace added from a folder is read from that folder, so after editing a mod, `/reload-plugins` picks up the change in a running session.
@@ -70,7 +70,7 @@ A marketplace added from a folder is read from that folder, so after editing a m
 ### Try it without installing
 
 ```bash
-claude --plugin-dir ./claude-code-mods/context-meter
+claude --plugin-dir ./claude-code-plugins/context-meter
 ```
 
 This loads the mod for that one session and reloads it whenever you save a file.
@@ -78,8 +78,8 @@ This loads the mod for that one session and reloads it whenever you save a file.
 ### Uninstall
 
 ```bash
-claude plugin uninstall context-meter@claude-code-mods
-claude plugin marketplace remove claude-code-mods
+claude plugin uninstall context-meter@vk
+claude plugin marketplace remove vk
 ```
 
 ## Usage
@@ -102,7 +102,7 @@ The figures come from `$.session.model()` and `$.session.usage()`, the same numb
 ## Development
 
 ```text
-claude-code-mods/
+claude-code-plugins/
 ├── .claude-plugin/marketplace.json   # lists every mod
 ├── context-meter/
 │   ├── .claude-plugin/plugin.json    # the mod's manifest
@@ -124,7 +124,7 @@ Recipes use [just](https://github.com/casey/just):
 
 `just typecheck` needs the type declarations Claude Code writes into `<mod>/.claude-plugin/types/` and `<mod>/tsconfig.json` the first time it loads the mod. Both are gitignored, so load a mod once (for example with `--plugin-dir`) before type-checking a fresh clone.
 
-**Adding a mod:** create a top-level folder with the same layout, list it in `.claude-plugin/marketplace.json` and in the `mods` variable of the `justfile`, then run `just check`.
+**Adding a plugin:** create a top-level folder with the same layout, list it in `.claude-plugin/marketplace.json` and in the `mods` variable of the `justfile`, then run `just check`.
 
 **Debugging:** start Claude Code with `--debug`. A hook that fails, or a drawing the engine refuses, is logged with the mod's name and the reason, and the engine falls back to its own behaviour.
 
