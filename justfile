@@ -1,23 +1,24 @@
-set shell := ["bash", "-cu"]
+set shell := ["bash", "-euo", "pipefail", "-c"]
 
-mods := "context-meter"
+# Every plugin folder the marketplace lists
+plugins := `jq -r '.plugins[].source' .claude-plugin/marketplace.json | tr '\n' ' '`
 
 # Show available commands
 default:
     @just --list
 
-# Validate the marketplace and every mod's manifest and hooks
+# Validate the marketplace and every plugin's manifest and hooks
 validate:
     claude plugin validate .
-    for mod in {{mods}}; do claude plugin validate "$mod"; done
+    for plugin in {{plugins}}; do claude plugin validate "$plugin"; done
 
-# Run every mod's tests
+# Run every plugin's tests
 test:
-    for mod in {{mods}}; do claude plugin test "$mod"; done
+    for plugin in {{plugins}}; do claude plugin test "$plugin"; done
 
-# Type-check every mod (needs the types Claude Code writes when it loads the mod)
+# Type-check every plugin (needs the types Claude Code writes when it loads the plugin)
 typecheck:
-    for mod in {{mods}}; do pnpm --package=typescript@5.6.3 dlx tsc -p "$mod"; done
+    for plugin in {{plugins}}; do pnpm --package=typescript@5.6.3 dlx tsc -p "$plugin"; done
 
 # Validate, type-check and test
 check: validate typecheck test

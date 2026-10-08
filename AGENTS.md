@@ -31,7 +31,7 @@ Help the user choose whether to keep or promote it, retain it as a reference, or
 Claude Code plugins (starting with mods: plugins of function hooks), published as the `vk` plugin marketplace; GitHub repo `koopycat/claude-code-plugins`.
 
 - `.claude-plugin/marketplace.json` lists every mod; each mod is a top-level folder with `.claude-plugin/plugin.json`, `hooks/` and `tests/`.
-- A new mod also goes into the `mods` list in the `justfile`.
+- The `justfile` reads the plugin list from `marketplace.json`; nothing else lists them.
 - `just check` validates, type-checks and tests all mods.
   `just typecheck` needs `<mod>/.claude-plugin/types/` and `<mod>/tsconfig.json`, which Claude Code writes when it loads the mod (both gitignored).
 - Run a mod in a session with `claude --plugin-dir ~/src/starter/claude_mods/<mod>`.
