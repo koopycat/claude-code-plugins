@@ -1,37 +1,20 @@
-# Starter Project Guide
+# Agent instructions for claude-code-plugins
 
-You are helping with a short-lived experiment in `~/src/starter`.
+Claude Code plugins, published as the `vk` plugin marketplace from the public repo `koopycat/claude-code-plugins`.
+The owner has them installed at user scope, read straight from this folder.
 
-## On the first user message
+## Commands
 
-1. Confirm that you are guiding the user through the experiment.
-2. Read `PROJECT.md` for the intent, lifecycle status, and review date.
-3. Ask what the user wants to build or test and what hypothesis should be checked.
+```bash
+just check                          # validate, type-check and test every plugin
+claude plugin test context-meter    # one plugin's tests
+```
 
-## During the experiment
+`just typecheck` needs `<plugin>/.claude-plugin/types/` and `<plugin>/tsconfig.json`, which Claude Code writes when it first loads the plugin (both gitignored).
+On a fresh clone, load the plugin once with `claude --plugin-dir <plugin>` first.
 
-1. Clarify the intent and record it in `PROJECT.md`.
-2. Suggest the smallest suitable technology stack.
-3. Create only the initial files needed to test the hypothesis.
-4. Keep the outcome and decision in `PROJECT.md` current.
+## Invariants
 
-## When the experiment ends
-
-Help the user choose whether to keep or promote it, retain it as a reference, or move it to the managed trash.
-
-## Rules
-
-- Prefer simple tools and a small number of files.
-- Do not build speculative production architecture.
-- Never delete the project directly.
-- Use `just trash <name>` from the starter workspace for reversible disposal.
-
-## This project
-
-Claude Code plugins (starting with mods: plugins of function hooks), published as the `vk` plugin marketplace; GitHub repo `koopycat/claude-code-plugins`.
-
-- `.claude-plugin/marketplace.json` lists every mod; each mod is a top-level folder with `.claude-plugin/plugin.json`, `hooks/` and `tests/`.
-- The `justfile` reads the plugin list from `marketplace.json`; nothing else lists them.
-- `just check` validates, type-checks and tests all mods.
-  `just typecheck` needs `<mod>/.claude-plugin/types/` and `<mod>/tsconfig.json`, which Claude Code writes when it loads the mod (both gitignored).
-- Run a mod in a session with `claude --plugin-dir ~/src/starter/claude_mods/<mod>`.
+- Never leave a plugin broken on disk, because every new session of the owner loads what is saved here, committed or not.
+- List a new plugin only in `.claude-plugin/marketplace.json`; the `justfile` reads its list from there.
+- Never commit `PROJECT.md`: it is the starter workspace's local metadata, not part of the public repo.
