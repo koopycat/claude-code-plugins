@@ -1,0 +1,10 @@
+{
+  "name": "branch-line",
+  "version": "0.1.0",
+  "description": "Always shows the git repository, branch and linked worktree of the session's directory under the prompt",
+  "author": {
+    "name": "Viktor Koop"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/koopycat/claude-code-plugins"
+}
