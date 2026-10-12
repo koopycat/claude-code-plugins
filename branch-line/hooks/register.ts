@@ -25,8 +25,13 @@ export const label = ({ top, gitDir, commonDir, branch, commit }: Checkout): str
   return parts.join(' · ')
 }
 
+// Git speaks the person's language unless told otherwise, and NOT_A_CHECKOUT
+// reads its English messages. A git that hangs is cut off rather than holding
+// a prompt.
+const GIT = { env: { LC_ALL: 'C' }, timeoutMs: 5_000 }
+
 const git = async ($: EngineInterface, cwd: string | undefined, ...args: string[]) => {
-  const { exitCode, stdout, stderr } = await $.process.run(['git', ...args], cwd === undefined ? undefined : { cwd })
+  const { exitCode, stdout, stderr } = await $.process.run(['git', ...args], cwd === undefined ? GIT : { ...GIT, cwd })
   return { exitCode, stdout: stdout.trim(), stderr: stderr.trim() }
 }
 
@@ -54,13 +59,18 @@ export const locate = async ($: EngineInterface, cwd?: string): Promise<Checkout
   return { top, gitDir, commonDir, branch: '', commit: commit.stdout }
 }
 
-let latest = 0
+let started = 0
+let written = 0
 
 const refresh = async ($: EngineInterface, cwd?: string) => {
-  const mine = (latest += 1)
+  const mine = (started += 1)
   const checkout = await locate($, cwd)
-  // A slower, older refresh must not overwrite a newer one.
-  if (mine === latest) $.ui.status(checkout === undefined ? undefined : label(checkout))
+  // A slower, older refresh must not overwrite a newer one's line, yet a newer
+  // one that failed has written nothing for it to protect.
+  if (mine > written) {
+    written = mine
+    $.ui.status(checkout === undefined ? undefined : label(checkout))
+  }
 }
 
 export const register: Register = on => {

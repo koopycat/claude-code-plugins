@@ -145,7 +145,7 @@ The figures come from `$.session.model()` and `$.session.usage()`, the same numb
 | `tool.call` on `Bash`, `EnterWorktree`, `ExitWorktree` | Re-reads it after each command, for `git switch`, `git checkout` and `git worktree` |
 | `prompt.submit` | Re-reads it before each prompt, for a branch switched outside the session |
 
-The line is pinned with `$.ui.status`, which gives each plugin a line of its own, so it sits beside the context-meter row instead of competing for the band. Git runs through `$.process.run` in the session's directory. Of overlapping refreshes only the newest writes the line. Git that cannot run, or refuses for a reason other than "not a repository", is reported by the engine as a skipped hook and leaves the line as it was.
+The line is pinned with `$.ui.status`, which gives each plugin a line of its own, so it sits beside the context-meter row instead of competing for the band. Git runs through `$.process.run` in the session's directory, with `LC_ALL=C` (its messages are read in English whatever your locale) and a 5 second limit. An older refresh never overwrites the line of a newer one. Git that cannot run, or refuses for a reason other than "not a repository", is reported by the engine as a skipped hook and leaves the line as it was.
 
 ## Development
 

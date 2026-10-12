@@ -31,6 +31,9 @@ const fakeGit = (on: On, answer: (cwd: string | undefined) => Repo | string | un
   on('process.run', ($, e) => {
     const cwd = e.init?.cwd
     calls.push(cwd)
+    // Git must speak English, since its errors are told apart by their text.
+    expect(e.init?.env).toEqual({ LC_ALL: 'C' })
+    expect(e.init?.timeoutMs).toBeGreaterThan(0)
     const repo = answer(cwd)
     if (typeof repo === 'string') return { value: fatal(repo) }
     if (repo === undefined) return { value: fatal('fatal: not a git repository (or any of the parent directories): .git') }
@@ -198,15 +201,45 @@ describe('refresh', () => {
 })
 
 describe('failure', () => {
-  test('a git error never changes what a tool call did', async ($, on) => {
+  test('a git error never changes what a tool call did, nor runs it again', async ($, on) => {
     fakeGit(on, () => 'fatal: detected dubious ownership in repository')
     const lines = statuses(on)
-    on('tool.call', () => ({ deny: 'not run in tests' }))
+    let runs = 0
+    on('tool.call', () => {
+      runs += 1
+      return { deny: 'not run in tests' }
+    })
 
     const ran = await $.tool.call({ tool: 'Bash', command: 'true' })
 
     expect(ran).toMatchObject({ deny: 'not run in tests' })
+    expect(runs).toBe(1)
     expect(lines).toEqual([])
+  })
+
+  test('an older refresh still writes when the newer one failed', async ($, on) => {
+    let release: () => void = () => {}
+    const held = new Promise<void>(resolve => (release = resolve))
+    let rootCalls = 0
+    const paths = [MAIN.top, MAIN.gitDir, MAIN.commonDir].join('\n')
+    on('process.run', async ($, e) => {
+      if (e.argv[1] === 'rev-parse') {
+        rootCalls += 1
+        if (rootCalls > 1) return { value: fatal('fatal: detected dubious ownership in repository') }
+        return { value: ok(paths) }
+      }
+      await held
+      return { value: ok('older') }
+    })
+    const lines = statuses(on)
+    on('tool.call', () => ({ deny: 'not run in tests' }))
+
+    const older = $.tool.call({ tool: 'Bash', command: 'git switch older' })
+    await $.tool.call({ tool: 'Bash', command: 'true' })
+    release()
+    await older
+
+    expect(lines).toEqual(['claude_mods · older'])
   })
 
   test('a missing git never blocks a prompt', async ($, on) => {
